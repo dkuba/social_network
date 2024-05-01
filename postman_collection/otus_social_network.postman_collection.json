@@ -1,0 +1,134 @@
+{
+	"info": {
+		"_postman_id": "8f720772-604a-480b-b3bf-ba8c0eba3f27",
+		"name": "otus_social_network",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "29612312"
+	},
+	"item": [
+		{
+			"name": "localhost:8000/v1/users/",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"username\": \"Vova\",\r\n\"password\": \"1234\",\r\n\"email\": \"vova@ya.ru\",\r\n\"first_name\": \"Vova\",\r\n\"last_name\": \"Vovin\",\r\n\"date_of_birth\": \"01-01-2023\",\r\n\"city\": \"Москва\",\r\n\"interests\": \"everythings\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8000/users",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"users"
+					]
+				},
+				"description": "Create user"
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:8000/v1/users/",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "EEqdr7PVVmJYTSjd6vVWCiJuarJpWePIGj4QrtM-K4w",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8000/v1/users/5e8eca54-3bfe-42aa-9539-3e4a949b27d3",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"v1",
+						"users",
+						"5e8eca54-3bfe-42aa-9539-3e4a949b27d3"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:8000/v1/login",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"username\": \"Foo\",\r\n\"password\": \"123\"}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8000/v1/login",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"v1",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:8000/v1/logout",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "EEqdr7PVVmJYTSjd6vVWCiJuarJpWePIGj4QrtM-K4w",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"username\": \"Foo\",\r\n\"password\": \"123\"}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8000/v1/logout",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"v1",
+						"logout"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
