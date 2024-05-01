@@ -1,7 +1,7 @@
 CREATE SCHEMA IF NOT EXISTS auth
     AUTHORIZATION postgres;
 
-CREATE SCHEMA IF NOT EXISTS auth
+CREATE SCHEMA IF NOT EXISTS geo
     AUTHORIZATION postgres;
 
 CREATE TABLE IF NOT EXISTS auth.users
@@ -16,18 +16,20 @@ CREATE TABLE IF NOT EXISTS auth.users
     city uuid NOT NULL,
     interests text COLLATE pg_catalog."default",
     CONSTRAINT users_pkey PRIMARY KEY (id)
-)
+);
 
-ALTER TABLE IF EXISTS auth.users
-    OWNER to postgres;
 
 CREATE TABLE IF NOT EXISTS geo.cities
 (
     id uuid NOT NULL,
     name character varying COLLATE pg_catalog."default" NOT NULL
-)
+);
 
-TABLESPACE pg_default;
+INSERT INTO geo.cities (id, name)
+        SELECT gen_random_uuid (), 'Москва'
+		WHERE NOT EXISTS
+    (   SELECT  id
+        FROM    geo.cities
+        WHERE   name='Москва'
+    );
 
-ALTER TABLE IF EXISTS geo.cities
-    OWNER to postgres;

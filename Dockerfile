@@ -12,14 +12,14 @@ COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy application code
-COPY ./app .
+COPY ./app ./app
 
 # Set ownership of the app directory to the non-root user
 RUN chown -R appuser:appuser /app
 
-# Expose port
-EXPOSE 8000
-
 # Run the application as non-root user
 USER appuser
+
+ENV PYTHONPATH "${PYTHONPATH}:/app"
+
 CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]

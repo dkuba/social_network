@@ -1,6 +1,6 @@
 import uuid
 
-from app.database import get_db_connection, put_db_connection
+from database import get_db_connection, put_db_connection
 from app.models import CreateUser, User
 import psycopg2.extras
 

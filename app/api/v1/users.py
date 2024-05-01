@@ -1,8 +1,8 @@
 from fastapi import APIRouter, Depends, HTTPException, status
-from app.models import User, LoginUser
-from app.crud.users import create_user, get_user_by_id, verify_user
-from app.dependencies import get_current_user
-from app.auth import get_session, create_session, remove_session
+from models import User, LoginUser
+from crud.users import create_user, get_user_by_id, verify_user
+from dependencies import get_current_user
+from auth import get_session, create_session, remove_session
 
 router = APIRouter(prefix='/v1')
 
