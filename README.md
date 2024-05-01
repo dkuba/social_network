@@ -29,6 +29,7 @@ curl --location 'localhost:8000/v1/users' \
 "first_name": "Vova",
 "last_name": "Vovin",
 "date_of_birth": "2018-01-10",
+"user_gender": "муж",
 "city": "Москва",
 "interests": "everythings"
 }'
@@ -77,6 +78,7 @@ curl --location 'localhost:8000/v1/users/b922b380-3f38-4897-b0c5-b3ca7a5e7ac4' \
     "first_name": "Vova",
     "last_name": "Vovin",
     "date_of_birth": "2018-01-10",
+    "user_gender": "муж",
     "city": "Москва",
     "interests": null,
     "id": "b922b380-3f38-4897-b0c5-b3ca7a5e7ac4"

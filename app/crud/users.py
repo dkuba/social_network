@@ -28,7 +28,8 @@ async def create_user(user: CreateUser) -> uuid.UUID:
             email, 
             first_name, 
             last_name, 
-            date_of_birth, 
+            date_of_birth,
+            user_gender, 
             city
             ) 
             VALUES (
@@ -37,6 +38,7 @@ async def create_user(user: CreateUser) -> uuid.UUID:
             %s,
             %s, 
             %s, 
+            %s,
             %s,
             %s,
             %s
@@ -49,6 +51,7 @@ async def create_user(user: CreateUser) -> uuid.UUID:
              user.first_name,
              user.last_name,
              user.date_of_birth,
+             user.user_gender,
              city_id)
         )
         user_id = cursor.fetchone()['id']
@@ -71,7 +74,8 @@ async def get_user_by_id(user_id: uuid) -> User:
         email, 
         first_name, 
         last_name, 
-        date_of_birth, 
+        date_of_birth,
+        user_gender, 
         cities.name as city, 
         interests
         
@@ -94,7 +98,6 @@ async def get_user_by_id(user_id: uuid) -> User:
 async def verify_user(username: str, password: str):
     connection = get_db_connection()
     cursor = connection.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
-    print(f'hash_password(password): {hash_password(password)}')
     try:
         cursor.execute("""
         SELECT 
@@ -104,7 +107,8 @@ async def verify_user(username: str, password: str):
         email, 
         first_name, 
         last_name, 
-        date_of_birth, 
+        date_of_birth,
+        user_gender, 
         cities.name as city, 
         interests
         

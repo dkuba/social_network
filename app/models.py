@@ -1,4 +1,5 @@
 import datetime
+from typing import Literal
 from uuid import UUID, uuid4
 
 from pydantic import BaseModel, Field, field_validator, validate_email
@@ -28,6 +29,7 @@ class UserMixin(BaseModel):
     first_name: str
     last_name: str
     date_of_birth: datetime.date
+    user_gender: Literal['муж', 'жен']
     city: str
     interests: str | None = Field(default=None)
 
