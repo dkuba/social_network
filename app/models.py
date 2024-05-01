@@ -5,14 +5,25 @@ from pydantic import BaseModel, Field, field_validator, validate_email
 from pydantic_core.core_schema import ValidationInfo
 
 
-class LoginUser(BaseModel):
-    username: str
+class PasswordMixin(BaseModel):
     password: str
+
+    @staticmethod
+    @field_validator('password')
+    def check_password(cls, v: str) -> str:
+        # TODO: accomplish more strict password validation
+        if len(v) < 1:
+            raise ValueError('password must has at list one character')
+
+        return v
+
+
+class LoginUser(PasswordMixin):
+    username: str
 
 
 class UserMixin(BaseModel):
     username: str
-    password: str
     email: str
     first_name: str
     last_name: str
@@ -29,15 +40,6 @@ class UserMixin(BaseModel):
         return v
 
     @staticmethod
-    @field_validator('password')
-    def check_password(cls, v: str) -> str:
-        # TODO: accomplish more strict password validation
-        if len(v) < 1:
-            raise ValueError('password must has at list one character')
-
-        return v
-
-    @staticmethod
     @field_validator("user_email")
     def validate_email(cls, value):
         try:
@@ -51,5 +53,5 @@ class User(UserMixin):
     id: UUID = Field(default_factory=uuid4)
 
 
-class CreateUser(UserMixin):
+class CreateUser(UserMixin, PasswordMixin):
     pass

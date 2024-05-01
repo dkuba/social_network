@@ -4,6 +4,8 @@ from database import get_db_connection, put_db_connection
 from app.models import CreateUser, User
 import psycopg2.extras
 
+from utils import hash_password
+
 psycopg2.extras.register_uuid()
 
 
@@ -42,7 +44,7 @@ async def create_user(user: CreateUser) -> uuid.UUID:
             RETURNING id;""",
             (uuid.uuid4(),
              user.username,
-             user.password,
+             hash_password(user.password),
              user.email,
              user.first_name,
              user.last_name,
@@ -66,7 +68,6 @@ async def get_user_by_id(user_id: uuid) -> User:
         
         usr.id, 
         username, 
-        password, 
         email, 
         first_name, 
         last_name, 
@@ -93,13 +94,13 @@ async def get_user_by_id(user_id: uuid) -> User:
 async def verify_user(username: str, password: str):
     connection = get_db_connection()
     cursor = connection.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+    print(f'hash_password(password): {hash_password(password)}')
     try:
         cursor.execute("""
         SELECT 
         
         usr.id, 
         username, 
-        password, 
         email, 
         first_name, 
         last_name, 
@@ -111,7 +112,7 @@ async def verify_user(username: str, password: str):
         
         INNER JOIN geo.cities as cities ON usr.city = cities.id 
         
-        WHERE username = %s AND password = %s;""", (username, password))
+        WHERE username = %s AND password = %s;""", (username, hash_password(password)))
         user = cursor.fetchone()
         return user
     finally:

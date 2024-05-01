@@ -5,21 +5,21 @@ FROM python:3.11-slim-buster
 RUN groupadd -r appuser && useradd -r -g appuser appuser
 
 # Set working directory
-WORKDIR /app
+WORKDIR /usr/app
 
 # Install dependencies
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy application code
-COPY ./app ./app
+COPY ./app .
 
 # Set ownership of the app directory to the non-root user
-RUN chown -R appuser:appuser /app
+RUN chown -R appuser:appuser /usr/app
 
 # Run the application as non-root user
 USER appuser
 
-ENV PYTHONPATH "${PYTHONPATH}:/app"
+ENV PYTHONPATH "${PYTHONPATH}:/usr"
 
 CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]

@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException, status
-from models import User, LoginUser
+from models import User, LoginUser, CreateUser
 from crud.users import create_user, get_user_by_id, verify_user
 from dependencies import get_current_user
 from auth import get_session, create_session, remove_session
@@ -8,7 +8,7 @@ router = APIRouter(prefix='/v1')
 
 
 @router.post("/users/")
-async def create_user_endpoint(user: User):
+async def create_user_endpoint(user: CreateUser):
     user_id = await create_user(user)
     return {"user_id": user_id}
 
