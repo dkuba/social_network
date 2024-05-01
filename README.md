@@ -13,6 +13,8 @@ git clone git@github.com:dkuba/social_network.git
 docker-compose up -d --build
 ```
 
+По-умолчанию сервис будет на порту 8000, а база на порту 5432.
+
 ### Примеры запросов
 
 #### Создать пользователя
