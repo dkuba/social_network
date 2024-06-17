@@ -4,6 +4,8 @@ import secrets
 
 security = HTTPBearer()
 
+
+#TODO: хранить сессии в базе. Пока так для простоты
 sessions = {}
 
 

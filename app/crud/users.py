@@ -1,6 +1,6 @@
 import uuid
 
-from database import get_db_connection, put_db_connection
+from database import get_db_connection, get_db_connection_slave
 from app.models import CreateUser, User
 import psycopg2.extras
 
@@ -9,6 +9,8 @@ from utils import hash_password
 psycopg2.extras.register_uuid()
 
 
+# TODO: вынести CRUD пользователя в отдельный сервис, унаследованный от абстрактного класса
+#  и, соответсвенно, во вьюхах сделать через Depends
 async def create_user(user: CreateUser) -> uuid.UUID:
     connection = get_db_connection()
     cursor = connection.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
@@ -59,11 +61,64 @@ async def create_user(user: CreateUser) -> uuid.UUID:
         return user_id
     finally:
         cursor.close()
-        put_db_connection(connection)
 
 
-async def get_user_by_id(user_id: uuid) -> User:
-    connection = get_db_connection()
+async def search_user(username: str,
+                      first_name: str,
+                      last_name: str,
+                      limit: int,
+                      offset: int):
+
+    connection = get_db_connection_slave()
+    cursor = connection.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+
+    cmd = """
+        SELECT 
+
+        usr.id, 
+        username, 
+        email, 
+        first_name, 
+        last_name, 
+        date_of_birth,
+        user_gender, 
+        cities.name as city, 
+        interests
+
+        FROM auth.users as usr
+
+        INNER JOIN geo.cities as cities ON usr.city = cities.id 
+        
+        WHERE true
+        """
+
+    if username:
+        cmd += f""" AND username LIKE '{username}%'"""
+    if first_name:
+        cmd += f""" AND first_name LIKE '{first_name}%'"""
+    if last_name:
+        cmd += f""" AND last_name LIKE '{last_name}%'"""
+
+    if limit and offset >= 0:
+        cmd += f""" LIMIT {limit} OFFSET {offset}"""
+
+    cmd += """ ORDER BY username"""
+
+    try:
+        cursor.execute(cmd)
+        result = []
+
+        for user_data in cursor.fetchall():
+            result.append(User(**user_data))
+
+        return result
+
+    finally:
+        cursor.close()
+
+
+async def get_user_by_id(user_id: uuid) -> User | None:
+    connection = get_db_connection_slave()
     cursor = connection.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
     try:
         cursor.execute("""
@@ -88,11 +143,13 @@ async def get_user_by_id(user_id: uuid) -> User:
 
         user_data = cursor.fetchone()
 
+        if not user_data:
+            return
+
         return User(**user_data)
 
     finally:
         cursor.close()
-        put_db_connection(connection)
 
 
 async def verify_user(username: str, password: str):
@@ -121,4 +178,3 @@ async def verify_user(username: str, password: str):
         return user
     finally:
         cursor.close()
-        put_db_connection(connection)

@@ -4,3 +4,6 @@ uvicorn==0.29.0
 python-dotenv==1.0.1
 passlib==1.7.4
 bcrypt==4.1.2
+pytest~=8.2.1
+Faker~=25.3.0
+pydantic~=2.7.1

@@ -3,14 +3,12 @@ import os
 from dotenv import load_dotenv
 
 import psycopg2
-from psycopg2 import pool
 
 
 load_dotenv()
 
-
-connection_pool = psycopg2.pool.SimpleConnectionPool(
-    1, 20,
+# TODO: восстанавливать соединение при разрыве
+connection = psycopg2.connect(
     user=os.getenv('DB_USER'),
     password=os.getenv('DB_PASSWORD'),
     host=os.getenv('DB_HOST'),
@@ -18,10 +16,18 @@ connection_pool = psycopg2.pool.SimpleConnectionPool(
     database=os.getenv('DB_NAME')
 )
 
+connection_slave = psycopg2.connect(
+    user=os.getenv('DB_USER'),
+    password=os.getenv('DB_PASSWORD'),
+    host=os.getenv('DB_HOST'),
+    port=os.getenv('DB_PORT_SLAVE'),
+    database=os.getenv('DB_NAME')
+)
+
 
 def get_db_connection():
-    return connection_pool.getconn()
+    return connection
 
 
-def put_db_connection(connection):
-    connection_pool.putconn(connection)
+def get_db_connection_slave():
+    return connection_slave

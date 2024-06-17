@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from models import User, LoginUser, CreateUser
-from crud.users import create_user, get_user_by_id, verify_user
+from crud.users import create_user, get_user_by_id, verify_user, search_user
 from dependencies import get_current_user
 from auth import get_session, create_session, remove_session
 
@@ -23,11 +23,25 @@ async def login(user: LoginUser):
 
 
 @router.get("/users/{user_id}")
-async def get_user_data(user_id: str, current_user: User = Depends(get_current_user)):
+async def get_user_data(user_id: str, current_user: User = Depends(get_current_user)) -> User:
     user = await get_user_by_id(user_id)
     if user is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
     return user
+
+
+@router.get("/users/search/")
+async def search(username: str | None = None,
+                 first_name: str | None = None,
+                 last_name: str | None = None,
+                 limit: int | None = None,
+                 offset: int | None = None) -> list[User]:
+    users = await search_user(username,
+                              first_name,
+                              last_name,
+                              limit,
+                              offset)
+    return users
 
 
 @router.post("/logout/")
