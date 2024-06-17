@@ -84,3 +84,8 @@ curl --location 'localhost:8000/v1/users/b922b380-3f38-4897-b0c5-b3ca7a5e7ac4' \
     "id": "b922b380-3f38-4897-b0c5-b3ca7a5e7ac4"
 }
 ```
+
+
+### Настрйока кластера баз данных
+
+Предварительно необходимо провести настройку кластера БД по инструкции:   https://github.com/OtusTeam/highload/blob/master/lessons/02/05/live/guide.md
