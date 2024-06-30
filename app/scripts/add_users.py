@@ -34,7 +34,7 @@ connection = psycopg2.connect(
 cursor = connection.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
 
 cmd = """
-INSERT INTO auth.users 
+INSERT INTO users.users 
 (id, username, password, email, first_name, last_name, date_of_birth, user_gender, city, interests) 
 VALUES %s;
 """

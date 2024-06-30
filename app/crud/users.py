@@ -169,7 +169,7 @@ async def verify_user(username: str, password: str):
         cities.name as city, 
         interests
         
-        FROM auth.users as usr
+        FROM users.users as usr
         
         INNER JOIN geo.cities as cities ON usr.city = cities.id 
         
@@ -178,3 +178,35 @@ async def verify_user(username: str, password: str):
         return user
     finally:
         cursor.close()
+
+
+async def add_friend(user_id: uuid.UUID,
+                     friend_id: uuid.UUID) -> None:
+    """Добавление друга."""
+
+    connection = get_db_connection()
+    cursor = connection.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+
+    cursor.execute("""
+    INSERT INTO users.user_friend (user_one_id, user_two_id) 
+    VALUES (%s, %s) 
+    """,
+                   user_id, friend_id)
+
+    connection.commit()
+
+
+async def remove_friend(user_id: uuid.UUID,
+                        friend_id: uuid.UUID) -> None:
+    """Удаление друга."""
+
+    connection = get_db_connection()
+    cursor = connection.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+
+    cursor.execute("""
+    DELETE FROM users.user_friend 
+    WHERE user_one_id = %s AND user_two_id = %s 
+    """,
+                   user_id, friend_id)
+
+    connection.commit()

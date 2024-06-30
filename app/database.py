@@ -19,7 +19,7 @@ connection = psycopg2.connect(
 connection_slave = psycopg2.connect(
     user=os.getenv('DB_USER'),
     password=os.getenv('DB_PASSWORD'),
-    host=os.getenv('DB_HOST'),
+    host=os.getenv('DB_HOST_SLAVE'),
     port=os.getenv('DB_PORT_SLAVE'),
     database=os.getenv('DB_NAME')
 )

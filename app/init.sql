@@ -6,7 +6,7 @@ CREATE SCHEMA IF NOT EXISTS geo
 
 CREATE TYPE gender AS ENUM ('муж', 'жен');
 
-CREATE TABLE IF NOT EXISTS auth.users
+CREATE TABLE IF NOT EXISTS users.users
 (
     id uuid NOT NULL,
     username character varying COLLATE pg_catalog."default" NOT NULL UNIQUE,
@@ -28,6 +28,12 @@ CREATE TABLE IF NOT EXISTS geo.cities
     name character varying COLLATE pg_catalog."default" NOT NULL
 );
 
+CREATE TABLE IF NOT EXISTS auth.user_friends
+(
+    user_one_id uuid NOT NULL,
+    user_two_id uuid NOT NULL
+);
+
 INSERT INTO geo.cities (id, name)
         SELECT gen_random_uuid (), 'Москва'
 		WHERE NOT EXISTS
@@ -35,4 +41,8 @@ INSERT INTO geo.cities (id, name)
         FROM    geo.cities
         WHERE   name='Москва'
     );
+
+
+CREATE INDEX IF NOT EXISTS user_search_index ON users.users(username, first_name, last_name);
+CREATE UNIQUE INDEX IF NOT EXISTS unique_user_friends_index ON users.user_friends(user_one_id, user_two_id);
 
