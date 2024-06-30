@@ -1,4 +1,4 @@
-CREATE SCHEMA IF NOT EXISTS auth
+CREATE SCHEMA IF NOT EXISTS users
     AUTHORIZATION postgres;
 
 CREATE SCHEMA IF NOT EXISTS geo
@@ -28,10 +28,17 @@ CREATE TABLE IF NOT EXISTS geo.cities
     name character varying COLLATE pg_catalog."default" NOT NULL
 );
 
-CREATE TABLE IF NOT EXISTS auth.user_friends
+CREATE TABLE IF NOT EXISTS users.user_friends
 (
     user_one_id uuid NOT NULL,
     user_two_id uuid NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS users.posts
+(
+    id uuid NOT NULL,
+    user_id uuid NOT NULL,
+    post_text TEXT NOT NULL
 );
 
 INSERT INTO geo.cities (id, name)
