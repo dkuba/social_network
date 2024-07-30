@@ -1,6 +1,6 @@
 from fastapi import Depends, HTTPException, status
 from auth import get_session, sessions
-from models import User
+from models.users import User
 
 
 def get_current_user(session_token: str = Depends(get_session)):

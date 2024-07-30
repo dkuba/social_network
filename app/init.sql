@@ -38,7 +38,8 @@ CREATE TABLE IF NOT EXISTS users.posts
 (
     id uuid NOT NULL,
     user_id uuid NOT NULL,
-    post_text TEXT NOT NULL
+    post_text TEXT NOT NULL,
+    date_inserted TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
 INSERT INTO geo.cities (id, name)

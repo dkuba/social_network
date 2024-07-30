@@ -2,8 +2,7 @@ import logging
 
 from fastapi import FastAPI
 
-from api.v1 import users
-
+from api.v1 import users, posts
 
 logger = logging.getLogger()
 logger.setLevel(logging.DEBUG)
@@ -11,6 +10,7 @@ logger.setLevel(logging.DEBUG)
 app = FastAPI()
 
 app.include_router(users.router)
+app.include_router(posts.router)
 
 
 if __name__ == "__main__":

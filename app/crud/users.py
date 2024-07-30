@@ -1,10 +1,12 @@
 import uuid
 
+from fastapi import HTTPException
+
 from database import get_db_connection, get_db_connection_slave
-from app.models import CreateUser, User
+from models.users import CreateUser, User
 import psycopg2.extras
 
-from utils import hash_password
+from utils.passwd import hash_password
 
 psycopg2.extras.register_uuid()
 
@@ -23,7 +25,7 @@ async def create_user(user: CreateUser) -> uuid.UUID:
 
     try:
         cursor.execute(
-            """INSERT INTO auth.users (
+            """INSERT INTO users.users (
             id, 
             username, 
             password, 
@@ -59,6 +61,9 @@ async def create_user(user: CreateUser) -> uuid.UUID:
         user_id = cursor.fetchone()['id']
         connection.commit()
         return user_id
+    except Exception as e:
+        raise HTTPException(status_code=404, detail=f"{e}")
+
     finally:
         cursor.close()
 
@@ -85,7 +90,7 @@ async def search_user(username: str,
         cities.name as city, 
         interests
 
-        FROM auth.users as usr
+        FROM users.users as usr
 
         INNER JOIN geo.cities as cities ON usr.city = cities.id 
         
@@ -134,7 +139,7 @@ async def get_user_by_id(user_id: uuid) -> User | None:
         cities.name as city, 
         interests
         
-        FROM auth.users as usr
+        FROM users.users as usr
         
         INNER JOIN geo.cities as cities ON usr.city = cities.id 
         
@@ -188,12 +193,31 @@ async def add_friend(user_id: uuid.UUID,
     cursor = connection.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
 
     cursor.execute("""
-    INSERT INTO users.user_friend (user_one_id, user_two_id) 
+    INSERT INTO users.user_friends (user_one_id, user_two_id) 
     VALUES (%s, %s) 
     """,
                    user_id, friend_id)
 
     connection.commit()
+
+
+async def get_followers(user_id: uuid.UUID):
+    connection = get_db_connection()
+    cursor = connection.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+
+    try:
+        cursor.execute("""
+        SELECT 
+
+        user_one_id 
+
+        FROM users.user_friends
+
+        WHERE user_two_id = %s;""", (user_id,))
+        users_ids = cursor.fetchall()
+        return users_ids
+    finally:
+        cursor.close()
 
 
 async def remove_friend(user_id: uuid.UUID,
@@ -204,7 +228,7 @@ async def remove_friend(user_id: uuid.UUID,
     cursor = connection.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
 
     cursor.execute("""
-    DELETE FROM users.user_friend 
+    DELETE FROM users.user_friends 
     WHERE user_one_id = %s AND user_two_id = %s 
     """,
                    user_id, friend_id)

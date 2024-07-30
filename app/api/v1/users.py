@@ -1,7 +1,7 @@
 from uuid import UUID
 
 from fastapi import APIRouter, Depends, HTTPException, status
-from models import User, LoginUser, CreateUser
+from models.users import User, LoginUser, CreateUser
 from crud.users import create_user, get_user_by_id, verify_user, search_user, add_friend, remove_friend
 from dependencies import get_current_user
 from auth import get_session, create_session, remove_session

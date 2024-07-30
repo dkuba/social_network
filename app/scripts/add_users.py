@@ -5,16 +5,14 @@ import datetime
 import os
 import random
 import string
-import sys
 import uuid
 
 from dotenv import load_dotenv
 
 from faker import Faker
 import psycopg2.extras
-from psycopg2.extensions import ISOLATION_LEVEL_READ_UNCOMMITTED
 
-from utils import hash_password
+from utils.passwd import hash_password
 
 load_dotenv()
 
