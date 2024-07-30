@@ -3,7 +3,7 @@ import uuid
 import psycopg2.extras
 
 from database import get_db_connection_slave, get_db_connection
-from models.posts import Post
+from models.posts import Post, PostRead
 
 
 async def create_post_in_db(user_id: uuid,
@@ -36,7 +36,7 @@ async def create_post_in_db(user_id: uuid,
         cursor.close()
 
 
-async def get_feeds_posts(user_id: uuid) -> list[Post] | None:
+async def get_feeds_posts(user_id: uuid) -> list[PostRead] | None:
     """Возвращает посты друзей пользователя."""
 
     connection = get_db_connection_slave()
@@ -64,7 +64,7 @@ async def get_feeds_posts(user_id: uuid) -> list[Post] | None:
         if not posts:
             return
 
-        return [Post(**post) for post in posts]
+        return [PostRead(**post) for post in posts]
 
     finally:
         cursor.close()

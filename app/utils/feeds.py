@@ -4,16 +4,21 @@ import uuid
 
 from crud.posts import get_feeds_posts
 from crud.users import get_followers
-from models.posts import Post
+from models.posts import PostRead
 from redis_cache import get_redis_cache, FEED_CACHE_KEY_PATTERN
 
 
 async def rebuild_feed(user_id):
-    posts: list[Post] = await get_feeds_posts(user_id)
+    posts: list[PostRead] = await get_feeds_posts(user_id)
 
-    await get_redis_cache().set(
+    _posts = [post.dict() for post in posts]
+
+    for post in _posts:
+        post['user_id'] = str(post['user_id'])
+
+    get_redis_cache().set(
         FEED_CACHE_KEY_PATTERN.format(user_id),
-        json.dumps([post.dict() for post in posts])
+        json.dumps(_posts)
     )
 
 

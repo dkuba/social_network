@@ -62,6 +62,7 @@ async def create_user(user: CreateUser) -> uuid.UUID:
         connection.commit()
         return user_id
     except Exception as e:
+        connection.rollback()
         raise HTTPException(status_code=404, detail=f"{e}")
 
     finally:
@@ -196,7 +197,7 @@ async def add_friend(user_id: uuid.UUID,
     INSERT INTO users.user_friends (user_one_id, user_two_id) 
     VALUES (%s, %s) 
     """,
-                   user_id, friend_id)
+                   (user_id, friend_id))
 
     connection.commit()
 
@@ -231,6 +232,6 @@ async def remove_friend(user_id: uuid.UUID,
     DELETE FROM users.user_friends 
     WHERE user_one_id = %s AND user_two_id = %s 
     """,
-                   user_id, friend_id)
+                   (user_id, friend_id))
 
     connection.commit()

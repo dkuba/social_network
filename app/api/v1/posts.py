@@ -29,14 +29,15 @@ async def create_post(post: PostCreate,
 
 @router.get("/posts/feed")
 async def get_friends_feed(current_user: User = Depends(get_current_user)):
-    cached_feed = await get_redis_cache().get(
+    cached_feed = get_redis_cache().get(
         FEED_CACHE_KEY_PATTERN.format(current_user.id)
     )
     if cached_feed:
         return json.loads(cached_feed)
 
     await rebuild_feed(current_user.id)
-    cached_feed = await get_redis_cache().get(
+
+    cached_feed = get_redis_cache().get(
         FEED_CACHE_KEY_PATTERN.format(current_user.id)
     )
     return json.loads(cached_feed)
